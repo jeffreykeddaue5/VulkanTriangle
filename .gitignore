@@ -1,0 +1,70 @@
+# =========================
+# Executables & libraries
+# =========================
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.so.*
+*.dylib
+*.a
+*.lib
+
+# =========================
+# Shader outputs
+# =========================
+*.spv
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# =========================
+# Debugging / profiling
+# =========================
+*.log
+*.trace
+*.prof
+vgcore.*
+
+# =========================
+# OS-specific
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# C/C++ intermediate files
+# =========================
+*.o
+*.obj
+*.i
+*.ii
+*.d
+*.pch
+*.gch
+
+# =========================
+# Clang / GCC tooling
+# =========================
+.cache/
+.clangd/
+.clang-tidy-cache/
+
+# =========================
+# Vulkan validation layers
+# =========================
+vk_layer_settings.txt
+
+# =========================
+# Temporary / misc
+# =========================
+tmp/
+temp/
