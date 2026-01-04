@@ -1,13 +1,13 @@
-CFLAGS = -std=c++20 -O2
-LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
+# Makefile
+BUILD_DIR := build
 
-VulkanTest: src/*.cpp
-	g++ $(CFLAGS) -o VulkanTest.exe src/*.cpp $(LDFLAGS)
+all:
+	cmake -S . -B $(BUILD_DIR)
+	cmake --build $(BUILD_DIR)
 
-.PHONY: test clean
-
-test: VulkanTest
-	./VulkanTest
+run: all
+	./$(BUILD_DIR)/vulkan_example
 
 clean:
-	rm -f VulkanTest
+	rm -rf $(BUILD_DIR)
+
