@@ -1,8 +1,14 @@
 #include "app.hpp"
 #include <GLFW/glfw3.h>
 
+VulkanTriangle::VulkanTriangle() {};
+
+VulkanTriangle::~VulkanTriangle() {};
+
 void VulkanTriangle::run() {
     initWindow();
+    instance.createInstance();
+    instance.setupDebugMessenger();
     mainloop();
     cleanup();
 }

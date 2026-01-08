@@ -11,6 +11,7 @@ add_executable(vulkan_example
     src/main.cpp
     src/app.cpp
     src/app.hpp
+    src/core/instance.cpp
 )
 
 target_link_libraries(vulkan_example
