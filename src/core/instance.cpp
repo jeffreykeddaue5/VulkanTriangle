@@ -2,31 +2,27 @@
 #include <cstdint>
 #include <vulkan/vulkan_structs.hpp>
 
-static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
-    vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
-    vk::DebugUtilsMessageTypeFlagsEXT type,
-    const vk::DebugUtilsMessengerCallbackDataEXT *pCallbackData, void *);
-
 std::vector<const char *> getRequiredExtensions();
 
-VulkanInstance::VulkanInstance() {
+VulkanInstance::VulkanInstance() {};
+VulkanInstance::~VulkanInstance() {}
+
+void VulkanInstance::init() {
     createInstance();
     setupDebugMessenger();
 };
-VulkanInstance::~VulkanInstance() {}
 
 void VulkanInstance::createInstance() {
     constexpr vk::ApplicationInfo appInfo{
         "Vulkan Triangle",        VK_MAKE_VERSION(1, 0, 0), "No Engine",
         VK_MAKE_VERSION(1, 0, 0), vk::ApiVersion13,
     };
-    // Get the required layers
+
     std::vector<char const *> requiredLayers;
     if (enableValidationLayers) {
         requiredLayers.assign(validationLayers.begin(), validationLayers.end());
     }
 
-    // Check if the required layers are supported by the Vulkan implementation.
     auto layerProperties = context.enumerateInstanceLayerProperties();
     for (auto const &requiredLayer : requiredLayers) {
         if (std::ranges::none_of(
@@ -37,11 +33,9 @@ void VulkanInstance::createInstance() {
                                      std::string(requiredLayer));
         }
     }
-    // Get the required extensions.
+
     auto requiredExtensions = getRequiredExtensions();
 
-    // Check if the required extensions are supported by the Vulkan
-    // implementation.
     auto extensionProperties = context.enumerateInstanceExtensionProperties();
     for (auto const &requiredExtension : requiredExtensions) {
         if (std::ranges::none_of(
@@ -57,12 +51,12 @@ void VulkanInstance::createInstance() {
     vk::InstanceCreateInfo createInfo{};
     createInfo.setPApplicationInfo(&appInfo);
     createInfo.enabledLayerCount = static_cast<uint32_t>(requiredLayers.size());
-    createInfo.ppEnabledExtensionNames = requiredLayers.data();
+    createInfo.ppEnabledLayerNames = requiredLayers.data();
     createInfo.enabledExtensionCount =
         static_cast<uint32_t>(requiredExtensions.size());
     createInfo.ppEnabledExtensionNames = requiredExtensions.data();
-
     instance = vk::raii::Instance(context, createInfo);
+    std::cout << "LogVulkanInstance: VulkanInstance Created" << std::endl;
 }
 
 void VulkanInstance::setupDebugMessenger() {
@@ -77,12 +71,10 @@ void VulkanInstance::setupDebugMessenger() {
         vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
         vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation);
-    vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT{};
+    vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT;
     debugUtilsMessengerCreateInfoEXT.messageSeverity = severityFlags;
     debugUtilsMessengerCreateInfoEXT.messageType = messageTypeFlags;
     debugUtilsMessengerCreateInfoEXT.pfnUserCallback = &debugCallback;
-    debugUtilsMessengerCreateInfoEXT.pUserData = nullptr;
-
     debugMessenger =
         instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
 }
@@ -100,7 +92,7 @@ std::vector<const char *> getRequiredExtensions() {
     return extensions;
 }
 
-static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
+VKAPI_ATTR vk::Bool32 VKAPI_CALL VulkanInstance::debugCallback(
     vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
     vk::DebugUtilsMessageTypeFlagsEXT type,
     const vk::DebugUtilsMessengerCallbackDataEXT *pCallbackData, void *) {

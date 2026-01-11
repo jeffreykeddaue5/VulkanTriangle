@@ -35,11 +35,18 @@ class VulkanInstance {
         ~VulkanInstance();
 
         VkInstance get() const;
+        void init();
         void createInstance();
         void setupDebugMessenger();
 
     private:
-        vk::raii::Instance instance = nullptr;
         vk::raii::Context context;
+        vk::raii::Instance instance = nullptr;
         vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+
+        static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
+            vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
+            vk::DebugUtilsMessageTypeFlagsEXT type,
+            const vk::DebugUtilsMessengerCallbackDataEXT *pCallbackData,
+            void *);
 };

@@ -7,8 +7,7 @@ VulkanTriangle::~VulkanTriangle() {};
 
 void VulkanTriangle::run() {
     initWindow();
-    instance.createInstance();
-    instance.setupDebugMessenger();
+    instance.init();
     mainloop();
     cleanup();
 }
