@@ -12,6 +12,9 @@ add_executable(vulkan_example
     src/app.cpp
     src/app.hpp
     src/core/instance.cpp
+    src/core/instance.hpp
+    src/core/device.cpp
+    src/core/device.hpp
 )
 
 target_link_libraries(vulkan_example

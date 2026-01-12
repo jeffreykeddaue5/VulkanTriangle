@@ -3,7 +3,9 @@
  * Owns all vulkan subsystems
  * Main loop
  */
-#include "core/instance.hpp"
+#pragma once
+
+#include "core/device.hpp"
 // #include <GLFW/glfw3.h>
 // #include <cstdint>
 const uint32_t WIDTH = 800;
@@ -16,10 +18,12 @@ class VulkanTriangle {
         ~VulkanTriangle();
         void run();
         void mainloop();
+        void initVulkan();
         void initWindow();
         void cleanup();
 
     private:
         GLFWwindow *window = nullptr;
-        VulkanInstance instance;
+        VulkanInstance m_instance;
+        VulkanDevice m_device;
 };

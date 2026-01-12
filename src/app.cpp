@@ -1,15 +1,23 @@
 #include "app.hpp"
 #include <GLFW/glfw3.h>
 
-VulkanTriangle::VulkanTriangle() {};
+VulkanTriangle::VulkanTriangle()
+    : m_instance{},
+      m_device(m_instance) {
+    initVulkan();
+};
 
 VulkanTriangle::~VulkanTriangle() {};
 
 void VulkanTriangle::run() {
     initWindow();
-    instance.init();
     mainloop();
     cleanup();
+}
+
+void VulkanTriangle::initVulkan() {
+    m_instance.init();
+    m_device.pickPhysicalDevice();
 }
 
 void VulkanTriangle::mainloop() {

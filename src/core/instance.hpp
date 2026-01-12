@@ -3,6 +3,7 @@
  * Setup Debug messenger
  * Query required extensions (GLFW/SDL/etc)
  */
+#pragma once
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
@@ -34,7 +35,7 @@ class VulkanInstance {
         VulkanInstance();
         ~VulkanInstance();
 
-        VkInstance get() const;
+        const vk::raii::Instance &get() const;
         void init();
         void createInstance();
         void setupDebugMessenger();

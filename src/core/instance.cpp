@@ -12,6 +12,8 @@ void VulkanInstance::init() {
     setupDebugMessenger();
 };
 
+const vk::raii::Instance &VulkanInstance::get() const { return instance; }
+
 void VulkanInstance::createInstance() {
     constexpr vk::ApplicationInfo appInfo{
         "Vulkan Triangle",        VK_MAKE_VERSION(1, 0, 0), "No Engine",
