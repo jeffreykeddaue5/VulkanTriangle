@@ -3,14 +3,13 @@
 
 VulkanTriangle::VulkanTriangle()
     : m_instance{},
-      m_device(m_instance) {
-    initVulkan();
-};
+      m_device(m_instance) {};
 
 VulkanTriangle::~VulkanTriangle() {};
 
 void VulkanTriangle::run() {
     initWindow();
+    initVulkan();
     mainloop();
     cleanup();
 }
@@ -18,6 +17,7 @@ void VulkanTriangle::run() {
 void VulkanTriangle::initVulkan() {
     m_instance.init();
     m_device.pickPhysicalDevice();
+    m_device.createLogicalDevice();
 }
 
 void VulkanTriangle::mainloop() {

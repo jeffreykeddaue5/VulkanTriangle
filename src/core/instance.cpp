@@ -17,8 +17,11 @@ const vk::raii::Instance &VulkanInstance::get() const { return instance; }
 
 void VulkanInstance::createInstance() {
     constexpr vk::ApplicationInfo appInfo{
-        "Vulkan Triangle",        VK_MAKE_VERSION(1, 0, 0), "No Engine",
-        VK_MAKE_VERSION(1, 0, 0), vk::ApiVersion13,
+        .pApplicationName = "Vulkan Triangle",
+        .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+        .pEngineName = "No Engine",
+        .engineVersion = VK_MAKE_VERSION(1, 0, 0),
+        .apiVersion = vk::ApiVersion13,
     };
 
     std::vector<char const *> requiredLayers;
@@ -40,6 +43,10 @@ void VulkanInstance::createInstance() {
     auto requiredExtensions = getRequiredExtensions();
 
     auto extensionProperties = context.enumerateInstanceExtensionProperties();
+    std::cout << "VulkanInstance: Extensions Properties" << std::endl;
+    for (auto &e : extensionProperties)
+        std::cout << e.extensionName << std::endl;
+
     for (auto const &requiredExtension : requiredExtensions) {
         if (std::ranges::none_of(
                 extensionProperties,

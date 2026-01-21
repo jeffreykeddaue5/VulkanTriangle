@@ -5,6 +5,7 @@
 #pragma once
 #include "instance.hpp"
 #include <vector>
+#include <vulkan/vulkan_raii.hpp>
 
 class VulkanDevice {
     public:
@@ -17,6 +18,7 @@ class VulkanDevice {
         const VulkanInstance &m_instance;
         vk::raii::PhysicalDevice physicalDevice = nullptr;
         vk::raii::Device logicalDevice = nullptr;
+        vk::raii::Queue graphicsQueue = nullptr;
 
         bool supportsGraphicsQueue(const vk::raii::PhysicalDevice &device);
         bool supportsRequiredExtensions(

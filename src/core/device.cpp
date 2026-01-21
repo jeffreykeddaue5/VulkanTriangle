@@ -1,6 +1,10 @@
 #include "device.hpp"
+#include "vulkan/vulkan.hpp"
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
+#include <iterator>
+#include <ostream>
 
 VulkanDevice::VulkanDevice(const VulkanInstance &instance)
     : m_instance(instance) {}
@@ -45,6 +49,8 @@ bool VulkanDevice::supportsRequiredExtensions(
 
         for (const vk::ExtensionProperties &ext : available) {
             if (std::strcmp(ext.extensionName, required) == 0) {
+                std::cout << "Extension Name Found : " << ext.extensionName
+                          << std::endl;
                 found = true;
                 break;
             }
@@ -106,4 +112,48 @@ void VulkanDevice::printGPUInfo(const vk::raii::PhysicalDevice &device) {
     std::cout << "Vulkan API Version: " << VK_VERSION_MAJOR(ver) << "."
               << VK_VERSION_MINOR(ver) << "." << VK_VERSION_PATCH(ver) << "\n";
 }
-void VulkanDevice::createLogicalDevice() {}
+void VulkanDevice::createLogicalDevice() {
+    // find the index of the first queue family that supports supports graphics
+    std::vector<vk::QueueFamilyProperties> queueFamilyProperties =
+        physicalDevice.getQueueFamilyProperties();
+
+    auto graphicsQueueFamilyProperty =
+        std::ranges::find_if(queueFamilyProperties, [](auto const &qfp) {
+            return (qfp.queueFlags & vk::QueueFlagBits::eGraphics) !=
+                   static_cast<vk::QueueFlags>(0);
+        });
+    assert(graphicsQueueFamilyProperty != queueFamilyProperties.end() &&
+           "No Graphics queue family found!");
+
+    auto graphicsIndex = static_cast<uint32_t>(std::distance(
+        queueFamilyProperties.begin(), graphicsQueueFamilyProperty));
+    std::cout << "Graphics Index: " << graphicsIndex << std::endl;
+
+    // 1. Default construct the chain
+    vk::StructureChain<vk::PhysicalDeviceFeatures2,
+                       vk::PhysicalDeviceVulkan13Features,
+                       vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>
+        featureChain;
+
+    // 2. Access and set specific features using .get<T>()
+    featureChain.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering =
+        true;
+    featureChain.get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>()
+        .extendedDynamicState = true;
+
+    float queuePriority = 0.f;
+    vk::DeviceQueueCreateInfo deviceQueueCreateInfo;
+    deviceQueueCreateInfo.queueFamilyIndex = graphicsIndex;
+    deviceQueueCreateInfo.queueCount = 1;
+    deviceQueueCreateInfo.pQueuePriorities = &queuePriority;
+
+    vk::DeviceCreateInfo deviceCreateInfo{
+        .pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &deviceQueueCreateInfo,
+        .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
+        .ppEnabledExtensionNames = deviceExtensions.data()};
+
+    logicalDevice = vk::raii::Device(physicalDevice, deviceCreateInfo);
+    graphicsQueue = vk::raii::Queue(logicalDevice, graphicsIndex, 0);
+}
