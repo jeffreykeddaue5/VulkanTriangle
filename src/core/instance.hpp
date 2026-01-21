@@ -4,12 +4,9 @@
  * Query required extensions (GLFW/SDL/etc)
  */
 #pragma once
-#include <algorithm>
+
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
 #include <vector>
 
 #if defined(__INTELLISENSE__) || !defined(USE_CPP20_MODULES)

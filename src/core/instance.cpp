@@ -1,5 +1,6 @@
 #include "instance.hpp"
 #include <cstdint>
+#include <iostream>
 #include <vulkan/vulkan_structs.hpp>
 
 std::vector<const char *> getRequiredExtensions();
