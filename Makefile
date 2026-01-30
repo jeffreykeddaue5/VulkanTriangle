@@ -1,8 +1,9 @@
+
 # Makefile
 BUILD_DIR := build
 
 all:
-	cmake -S . -B $(BUILD_DIR)
+	cmake -S . -B $(BUILD_DIR) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 	cmake --build $(BUILD_DIR) --verbose
 
 run: all
@@ -10,4 +11,3 @@ run: all
 
 clean:
 	rm -rf $(BUILD_DIR)
-
