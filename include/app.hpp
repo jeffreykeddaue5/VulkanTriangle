@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include "core/device.hpp"
+#include "device.hpp"
 // #include <GLFW/glfw3.h>
 // #include <cstdint>
 const uint32_t WIDTH = 800;

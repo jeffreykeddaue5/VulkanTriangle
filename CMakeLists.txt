@@ -16,13 +16,13 @@ find_package(glfw3 CONFIG REQUIRED)
 
 # ✅ Add your executable
 add_executable(vulkan_example
-    src/main.cpp
-    src/app.cpp
-    src/app.hpp
-    src/core/instance.cpp
-    src/core/instance.hpp
-    src/core/device.cpp
-    src/core/device.hpp
+    src/app.cpp 
+    src/device.cpp 
+    src/instance.cpp 
+    src/main.cpp 
+    include/app.hpp 
+    include/device.hpp 
+    include/instance.hpp 
 )
 
 # ✅ Link libraries
