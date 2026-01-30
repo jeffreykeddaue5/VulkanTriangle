@@ -1,32 +1,46 @@
 
 cmake_minimum_required(VERSION 3.20)
-project(vulkan_example LANGUAGES CXX)
+project(vulkan_triangle LANGUAGES CXX)
 
-# ✅ Force C++20
+# -------------------------
+# C++ Standard
+# -------------------------
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF) # disable GNU extensions
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# ✅ Export compile_commands.json for clangd / Neovim
+#  Export compile_commands.json for clangd / Neovim
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ✅ Find Vulkan and GLFW
+#  Find Vulkan and GLFW
 find_package(Vulkan REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 
-# ✅ Add your executable
-add_executable(vulkan_example
-    src/app.cpp 
+# -------------------------
+# Executable
+# -------------------------
+add_executable(vulkan_triangle
+    src/app.cpp
+    src/main.cpp
+    src/instance.cpp
     src/device.cpp 
-    src/instance.cpp 
-    src/main.cpp 
-    include/app.hpp 
-    include/device.hpp 
-    include/instance.hpp 
 )
 
-# ✅ Link libraries
-target_link_libraries(vulkan_example
-    Vulkan::Vulkan
-    glfw
+
+# -------------------------
+# Include Paths
+# -------------------------
+target_include_directories(vulkan_triangle
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+# -------------------------
+# Link Libraries
+# -------------------------
+target_link_libraries(vulkan_triangle
+    PRIVATE
+        Vulkan::Vulkan
+        glfw
+)
+

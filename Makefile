@@ -6,7 +6,7 @@ all:
 	cmake --build $(BUILD_DIR) --verbose
 
 run: all
-	./$(BUILD_DIR)/vulkan_example
+	./$(BUILD_DIR)/vulkan_triangle
 
 clean:
 	rm -rf $(BUILD_DIR)

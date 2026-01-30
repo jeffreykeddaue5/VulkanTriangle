@@ -1,4 +1,4 @@
-#include "../include/device.hpp"
+#include "device.hpp"
 #include "vulkan/vulkan.hpp"
 #include <algorithm>
 #include <cstdint>

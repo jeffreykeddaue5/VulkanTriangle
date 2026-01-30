@@ -1,4 +1,4 @@
-#include "../include/app.hpp"
+#include "app.hpp"
 #include <GLFW/glfw3.h>
 
 VulkanTriangle::VulkanTriangle()
