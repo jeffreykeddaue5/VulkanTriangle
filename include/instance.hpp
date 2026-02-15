@@ -19,33 +19,27 @@ import vulkan_hpp;
 #define GLFW_INCLUDE_VULKAN // REQUIRED only for GLFW CreateWindowSurface.
 #include <GLFW/glfw3.h>
 
-const std::vector<char const *> validationLayers = {
-    "VK_LAYER_KHRONOS_validation"};
-
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
 #else
 constexpr bool enableValidationLayers = true;
 #endif
 
-class VulkanInstance {
-    public:
-        VulkanInstance();
-        ~VulkanInstance();
+const std::vector<char const *> validationLayers = {
+    "VK_LAYER_KHRONOS_validation"};
 
-        const vk::raii::Instance &get() const;
-        void init();
-        void createInstance();
-        void setupDebugMessenger();
+namespace vkcore::instance {
 
-    private:
-        vk::raii::Context context;
-        vk::raii::Instance instance = nullptr;
-        vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+void init();
+void createInstance();
+void setupDebugMessenger();
+vk::raii::Instance &get();
 
-        static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
-            vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
-            vk::DebugUtilsMessageTypeFlagsEXT type,
-            const vk::DebugUtilsMessengerCallbackDataEXT *pCallbackData,
-            void *);
-};
+std::vector<const char *> getRequiredExtensions();
+
+static VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
+    vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
+    vk::DebugUtilsMessageTypeFlagsEXT type,
+    const vk::DebugUtilsMessengerCallbackDataEXT *pCallbackData, void *);
+
+} // namespace vkcore::instance

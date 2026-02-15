@@ -3,19 +3,19 @@
 #include <iostream>
 #include <vulkan/vulkan_structs.hpp>
 
-std::vector<const char *> getRequiredExtensions();
+namespace vkcore::instance {
 
-VulkanInstance::VulkanInstance() {};
-VulkanInstance::~VulkanInstance() {}
+static vk::raii::Context context;
+static vk::raii::Instance m_instance = nullptr;
+static vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+vk::raii::Instance &get() { return m_instance; }
 
-void VulkanInstance::init() {
+void init() {
     createInstance();
     setupDebugMessenger();
-};
+}
 
-const vk::raii::Instance &VulkanInstance::get() const { return instance; }
-
-void VulkanInstance::createInstance() {
+void createInstance() {
     constexpr vk::ApplicationInfo appInfo{
         .pApplicationName = "Vulkan Triangle",
         .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
@@ -65,11 +65,11 @@ void VulkanInstance::createInstance() {
     createInfo.enabledExtensionCount =
         static_cast<uint32_t>(requiredExtensions.size());
     createInfo.ppEnabledExtensionNames = requiredExtensions.data();
-    instance = vk::raii::Instance(context, createInfo);
+    m_instance = vk::raii::Instance(context, createInfo);
     std::cout << "LogVulkanInstance: VulkanInstance Created" << std::endl;
 }
 
-void VulkanInstance::setupDebugMessenger() {
+void setupDebugMessenger() {
     if (!enableValidationLayers)
         return;
 
@@ -85,8 +85,8 @@ void VulkanInstance::setupDebugMessenger() {
     debugUtilsMessengerCreateInfoEXT.messageSeverity = severityFlags;
     debugUtilsMessengerCreateInfoEXT.messageType = messageTypeFlags;
     debugUtilsMessengerCreateInfoEXT.pfnUserCallback = &debugCallback;
-    debugMessenger =
-        instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
+    debugMessenger = m_instance.createDebugUtilsMessengerEXT(
+        debugUtilsMessengerCreateInfoEXT);
 }
 
 std::vector<const char *> getRequiredExtensions() {
@@ -102,7 +102,7 @@ std::vector<const char *> getRequiredExtensions() {
     return extensions;
 }
 
-VKAPI_ATTR vk::Bool32 VKAPI_CALL VulkanInstance::debugCallback(
+VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
     vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
     vk::DebugUtilsMessageTypeFlagsEXT type,
     const vk::DebugUtilsMessengerCallbackDataEXT *pCallbackData, void *) {
@@ -113,3 +113,4 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL VulkanInstance::debugCallback(
     }
     return vk::False;
 }
+} // namespace vkcore::instance

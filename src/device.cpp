@@ -1,4 +1,5 @@
 #include "device.hpp"
+#include "instance.hpp"
 #include "vulkan/vulkan.hpp"
 #include <algorithm>
 #include <cstdint>
@@ -6,13 +7,19 @@
 #include <iterator>
 #include <ostream>
 
-VulkanDevice::VulkanDevice(const VulkanInstance &instance)
-    : m_instance(instance) {}
+namespace vkcore::device {
 
-VulkanDevice::~VulkanDevice() {}
+vk::raii::PhysicalDevice physicalDevice = nullptr;
+vk::raii::Device logicalDevice = nullptr;
+vk::raii::Queue graphicsQueue = nullptr;
 
-void VulkanDevice::pickPhysicalDevice() {
-    const auto &instance = m_instance.get();
+std::vector<const char *> deviceExtensions = {
+    vk::KHRSwapchainExtensionName, vk::KHRSpirv14ExtensionName,
+    vk::KHRSynchronization2ExtensionName,
+    vk::KHRCreateRenderpass2ExtensionName};
+
+void pickPhysicalDevice() {
+    const auto &instance = vkcore::instance::get();
     auto devices = instance.enumeratePhysicalDevices();
     if (devices.empty()) {
         throw std::runtime_error("failed to find gpus with Vulkan Support!");
@@ -27,8 +34,7 @@ void VulkanDevice::pickPhysicalDevice() {
     throw std::runtime_error("VulkanDevice: failed to find suitable GPU");
 }
 
-bool VulkanDevice::supportsGraphicsQueue(
-    const vk::raii::PhysicalDevice &device) {
+bool supportsGraphicsQueue(const vk::raii::PhysicalDevice &device) {
     auto queueFamilies = device.getQueueFamilyProperties();
     return std::any_of(queueFamilies.begin(), queueFamilies.end(),
                        [](const vk::QueueFamilyProperties &qfp) {
@@ -37,8 +43,7 @@ bool VulkanDevice::supportsGraphicsQueue(
                                   vk::QueueFlags{};
                        });
 }
-
-bool VulkanDevice::supportsRequiredExtensions(
+bool supportsRequiredExtensions(
     const vk::raii::PhysicalDevice &device,
     const std::vector<const char *> &requiredExtensions) {
 
@@ -63,10 +68,8 @@ bool VulkanDevice::supportsRequiredExtensions(
 
     return true;
 }
-
-bool VulkanDevice::isDeviceSuitable(
-    const vk::raii::PhysicalDevice &device,
-    const std::vector<const char *> &requiredExtensions) {
+bool isDeviceSuitable(const vk::raii::PhysicalDevice &device,
+                      const std::vector<const char *> &requiredExtensions) {
     auto props = device.getProperties();
 
     if (props.apiVersion < VK_API_VERSION_1_3)
@@ -80,7 +83,7 @@ bool VulkanDevice::isDeviceSuitable(
 
     return true;
 }
-void VulkanDevice::printGPUInfo(const vk::raii::PhysicalDevice &device) {
+void printGPUInfo(const vk::raii::PhysicalDevice &device) {
     vk::PhysicalDeviceProperties props = device.getProperties();
 
     std::cout << "GPU Name: " << props.deviceName << "\n";
@@ -112,7 +115,8 @@ void VulkanDevice::printGPUInfo(const vk::raii::PhysicalDevice &device) {
     std::cout << "Vulkan API Version: " << VK_VERSION_MAJOR(ver) << "."
               << VK_VERSION_MINOR(ver) << "." << VK_VERSION_PATCH(ver) << "\n";
 }
-void VulkanDevice::createLogicalDevice() {
+
+void createLogicalDevice() {
     // find the index of the first queue family that supports supports graphics
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties =
         physicalDevice.getQueueFamilyProperties();
@@ -147,13 +151,17 @@ void VulkanDevice::createLogicalDevice() {
     deviceQueueCreateInfo.queueCount = 1;
     deviceQueueCreateInfo.pQueuePriorities = &queuePriority;
 
-    vk::DeviceCreateInfo deviceCreateInfo{
-        .pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
-        .queueCreateInfoCount = 1,
-        .pQueueCreateInfos = &deviceQueueCreateInfo,
-        .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
-        .ppEnabledExtensionNames = deviceExtensions.data()};
+    vk::DeviceCreateInfo deviceCreateInfo;
+
+    deviceCreateInfo.pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
+    deviceCreateInfo.queueCreateInfoCount = 1,
+    deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfo,
+    deviceCreateInfo.enabledExtensionCount =
+        static_cast<uint32_t>(deviceExtensions.size()),
+    deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
     logicalDevice = vk::raii::Device(physicalDevice, deviceCreateInfo);
     graphicsQueue = vk::raii::Queue(logicalDevice, graphicsIndex, 0);
 }
+
+} // namespace vkcore::device

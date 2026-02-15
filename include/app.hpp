@@ -5,9 +5,8 @@
  */
 #pragma once
 
-#include "device.hpp"
-// #include <GLFW/glfw3.h>
-// #include <cstdint>
+#include <GLFW/glfw3.h>
+#include <cstdint>
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
@@ -24,6 +23,4 @@ class VulkanTriangle {
 
     private:
         GLFWwindow *window = nullptr;
-        VulkanInstance m_instance;
-        VulkanDevice m_device;
 };

@@ -1,10 +1,9 @@
 #include "app.hpp"
+#include "device.hpp"
+#include "instance.hpp"
 #include <GLFW/glfw3.h>
 
-VulkanTriangle::VulkanTriangle()
-    : m_instance{},
-      m_device(m_instance) {};
-
+VulkanTriangle::VulkanTriangle() {};
 VulkanTriangle::~VulkanTriangle() {};
 
 void VulkanTriangle::run() {
@@ -15,9 +14,9 @@ void VulkanTriangle::run() {
 }
 
 void VulkanTriangle::initVulkan() {
-    m_instance.init();
-    m_device.pickPhysicalDevice();
-    m_device.createLogicalDevice();
+    vkcore::instance::init();
+    vkcore::device::pickPhysicalDevice();
+    vkcore::device::createLogicalDevice();
 }
 
 void VulkanTriangle::mainloop() {
