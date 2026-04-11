@@ -31,6 +31,8 @@ void createInstance() {
 
     auto layerProperties = context.enumerateInstanceLayerProperties();
     for (auto const &requiredLayer : requiredLayers) {
+        // if the requried layer is not in any of the layer propries,
+        // throw an error
         if (std::ranges::none_of(
                 layerProperties, [requiredLayer](auto const &layerProperty) {
                     return strcmp(layerProperty.layerName, requiredLayer) == 0;
@@ -48,6 +50,7 @@ void createInstance() {
         std::cout << e.extensionName << std::endl;
 
     for (auto const &requiredExtension : requiredExtensions) {
+        // Sees if the requied extensions are in the extension properties
         if (std::ranges::none_of(
                 extensionProperties,
                 [requiredExtension](auto const &extensionProperty) {
