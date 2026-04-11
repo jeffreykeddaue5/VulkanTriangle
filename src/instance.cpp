@@ -105,6 +105,7 @@ std::vector<const char *> getRequiredExtensions() {
     return extensions;
 }
 
+// Need to disect this function (so much is going on and idfk)
 VKAPI_ATTR vk::Bool32 VKAPI_CALL debugCallback(
     vk::DebugUtilsMessageSeverityFlagBitsEXT severity,
     vk::DebugUtilsMessageTypeFlagsEXT type,
