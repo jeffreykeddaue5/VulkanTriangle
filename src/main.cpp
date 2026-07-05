@@ -1,16 +1,38 @@
-#include "app.hpp"
+#if defined(__INTELLISENSE__) || !defined(USE_CPP20_MODULES)
+#include <vulkan/vulkan_raii.hpp>
+#else
+import vulkan_hpp;
+#endif
+#include <GLFW/glfw3.h>
+
 #include <cstdlib>
-#include <exception>
 #include <iostream>
+#include <stdexcept>
+
+class HelloTriangleApplication {
+    public:
+        void run() {
+            initVulkan();
+            mainLoop();
+            cleanup();
+        }
+
+    private:
+        void initVulkan() {}
+
+        void mainLoop() { std::cout << "Hello Test" << std::endl; }
+
+        void cleanup() {}
+};
 
 int main() {
-    VulkanTriangle app;
     try {
-        std::cout << "--- Vulkan Triangle Program ---" << std::endl;
+        HelloTriangleApplication app;
         app.run();
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
+
     return EXIT_SUCCESS;
 }

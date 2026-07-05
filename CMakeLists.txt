@@ -20,10 +20,7 @@ find_package(glfw3 CONFIG REQUIRED)
 # Executable
 # -------------------------
 add_executable(vulkan_triangle
-    src/app.cpp
-    src/main.cpp
-    src/instance.cpp
-    src/device.cpp 
+   src/main.cpp
 )
 
 
