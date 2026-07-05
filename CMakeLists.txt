@@ -19,11 +19,13 @@ find_package(glfw3 CONFIG REQUIRED)
 # -------------------------
 # Executable
 # -------------------------
-add_executable(vulkan_triangle
-   src/main.cpp
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+    src/*.cpp
 )
 
-
+add_executable(vulkan_triangle
+    ${SOURCES}
+)
 # -------------------------
 # Include Paths
 # -------------------------

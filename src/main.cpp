@@ -20,7 +20,9 @@ class HelloTriangleApplication {
     private:
         void initVulkan() {}
 
-        void mainLoop() { std::cout << "Hello Test" << std::endl; }
+        void mainLoop() {
+            std::cout << "__cplusplus = " << __cplusplus << '\n';
+        }
 
         void cleanup() {}
 };
